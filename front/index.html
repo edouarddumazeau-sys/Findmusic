@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Appli musique</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="wrap">
+    <h1>Recherche thématique</h1>
+
+    <div class="card">
+      <label>Thème</label>
+      <input id="theme" placeholder="Ex: un père parle à sa fille" />
+      <button id="go">Rechercher</button>
+      <div id="status" class="status"></div>
+    </div>
+
+    <section>
+      <h2>Thème principal</h2>
+      <div id="main"></div>
+    </section>
+
+    <section>
+      <h2>Mention / lien secondaire</h2>
+      <div id="secondary"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
