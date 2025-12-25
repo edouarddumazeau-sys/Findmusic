@@ -1,5 +1,5 @@
 // Mets ici l'URL du PROXY une fois déployé (ex: https://ton-proxy.onrender.com)
-const PROXY_URL = "http://localhost:8001"; // dev local
+const PROXY_URL = "https://findmusic-proxy.onrender.com"; // dev local
 
 const $ = (id) => document.getElementById(id);
 
