@@ -72,13 +72,17 @@ def find_lyrics(parsed_theme: dict) -> list[dict]:
     for kw in keywords:
         for cand in _search_genius(kw, limit_hits=3):
             lyrics = _scrape_lyrics_from_genius_page(cand["url"])
-            if lyrics:
-                songs.append({
-                    "title": cand["title"],
-                    "artist": cand["artist"],
-                    "year": cand["year"],
-                    "lyrics": lyrics
-                })
+            if not lyrics:
+            # fallback si Genius page bloquée / changeante
+            lyrics = _lyrics_ovh(cand["artist"], cand["title"])
+
+           if lyrics:
+               songs.append({
+                   "title": cand["title"],
+                   "artist": cand["artist"],
+                   "year": cand["year"],
+                   "lyrics": lyrics
+              })
         time.sleep(0.25)
         if len(songs) >= 12:
             break
