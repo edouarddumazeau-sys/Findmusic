@@ -73,21 +73,22 @@ def analyze_songs(songs: list, parsed_theme: dict, max_results: int = 20) -> dic
     strict = parsed_theme["strict_keywords"]
     expanded = parsed_theme["expanded_keywords"]
 
-    enriched = []
+        enriched = []
+
     for s in songs:
         lyr = s.get("lyrics_processed") or ""
         if not lyr.strip():
             continue
+
         rel = compute_relevance(lyr, strict, expanded)
         if rel == 0:
             rel = 0.15  # plancher V1 pour éviter zéro résultat
+
         den = compute_density(lyr, strict)
         cen = compute_centrality(lyr, strict)
         snippet = extract_snippet(lyr, strict)
         cat = classify(den, cen)
 
-    if rel < 0.1:
-    continue
         enriched.append({
             "title": s.get("title"),
             "artist": s.get("artist"),
