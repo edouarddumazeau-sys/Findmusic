@@ -47,7 +47,9 @@ $("go").addEventListener("click", async () => {
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
 
-    $("status").textContent = `OK • requête: "${data.query}" (${(data.language_query||"").toUpperCase()})`;
+    const dbg = data.debug ? ` • debug raw=${data.debug.songs_raw_count} processed=${data.debug.songs_processed_count} main=${data.debug.main_count} secondary=${data.debug.secondary_count}` : "";
+    $("status").textContent = `OK • requête: "${data.query}" (${(data.language_query||"").toUpperCase()})${dbg}`;
+
     renderSection($("main"), data.results_main);
     renderSection($("secondary"), data.results_secondary);
   } catch (e) {
