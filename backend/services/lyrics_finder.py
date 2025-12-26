@@ -7,6 +7,7 @@ GENIUS_TOKEN = os.getenv("GENIUS_TOKEN", "").strip()
 GENIUS_SEARCH = "https://api.genius.com/search"
 
 def _scrape_lyrics_from_genius_page(url: str) -> str | None:
+    headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(url, timeout=15)
     if r.status_code != 200:
         return None
@@ -22,6 +23,7 @@ def _scrape_lyrics_from_genius_page(url: str) -> str | None:
     return text if text else None
 
 def _search_genius(keyword: str, limit_hits: int = 10) -> list[dict]:
+    headers = {"User-Agent": "Mozilla/5.0"}
     if not GENIUS_TOKEN:
         return []
     headers = {"Authorization": f"Bearer {GENIUS_TOKEN}"}
