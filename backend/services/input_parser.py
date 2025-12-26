@@ -10,11 +10,16 @@ def clean_text(text: str) -> str:
     return text
 
 def detect_language(text: str) -> str:
+    # si requête trop courte, on force FR
+    if len(text.split()) <= 2:
+        return "fr"
+
     try:
         lang = detect(text)
     except:
         return "fr"
-    return lang if lang in {"fr","en","es","vi"} else "en"
+
+    return lang if lang in {"fr", "en", "es", "vi"} else "fr"
 
 def extract_strict_keywords(text: str) -> list[str]:
     toks = [t for t in text.split() if t and t not in _STOP]
