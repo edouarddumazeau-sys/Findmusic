@@ -38,15 +38,20 @@ def compute_centrality(lyrics: str, strict: list[str]) -> float:
 
 def extract_snippet(lyrics: str, strict: list[str]) -> str:
     lines = [l.strip() for l in lyrics.split("\n") if l.strip()]
+    if not lines:
+        return ""
+
     scored = []
     for line in lines:
         low = line.lower()
         s = sum(1 for w in strict if w in low)
         if s > 0:
             scored.append((s, line))
+
+    # ✅ Si rien ne match strictement, on prend un fallback lisible
     if not scored:
-        fallback = [l for l in lines[:2] if l.strip()]
-        return "\n".join(fallback)
+        return "\n".join(lines[:2])  # 2 premières lignes non vides
+
     scored.sort(key=lambda x: x[0], reverse=True)
     best = [scored[0][1]]
     if len(scored) > 1:
@@ -54,7 +59,7 @@ def extract_snippet(lyrics: str, strict: list[str]) -> str:
     return "\n".join(best)
 
 def classify(density: float, centrality: float) -> str:
-    return "main" if (density + centrality) > 0.55 else "secondary"
+    return "main" if (density + centrality) > 0.35 else "secondary"
 
 def weighted_shuffle(items: list[dict]) -> list[dict]:
     if not items:
