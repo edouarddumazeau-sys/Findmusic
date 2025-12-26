@@ -123,7 +123,7 @@ def find_lyrics(parsed_theme: dict):
     songs: list[dict] = []
 
     for kw in keywords:
-        cands, status = _search_genius_debug(kw, limit_hits=3)
+        cands, status = _search_genius_debug(kw, limit_hits=6)
         debug["genius_search_statuses"].append({kw: status})
         debug["genius_hits_total"] += len(cands)
 
@@ -147,10 +147,10 @@ def find_lyrics(parsed_theme: dict):
                     "lyrics": lyrics
                 })
 
-            if len(songs) >= 12:
+            if len(songs) >= 25:
                 break
 
-        if len(songs) >= 12:
+        if len(songs) >= 25:
             break
 
         time.sleep(0.25)  # petite pause entre keywords
@@ -161,7 +161,7 @@ def find_lyrics(parsed_theme: dict):
         key = (s["artist"].lower(), s["title"].lower())
         uniq[key] = s
 
-    songs_out = list(uniq.values())[:12]
+    songs_out = list(uniq.values())[:25]
     debug["added_songs"] = len(songs_out)
 
     return songs_out, debug
