@@ -1,11 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+
 from services.input_parser import parse_theme
 from services.lyrics_finder import find_lyrics
 from services.language_handler import normalize_lyrics
 from services.theme_analyzer import analyze_songs
 
-app = FastAPI(title="Appli musique - Backend")
+app = FastAPI(title="FindMusic - Backend")
 
 class SearchRequest(BaseModel):
     theme: str
@@ -21,14 +22,26 @@ def search(req: SearchRequest):
     if not theme:
         raise HTTPException(status_code=400, detail="theme vide")
 
+    # 1) Parse
     parsed = parse_theme(theme)
-    songs_raw = find_lyrics(parsed)
-    songs_processed = normalize_lyrics(songs_raw, parsed)
-    result = analyze_songs(songs_processed, parsed, max_results=min(req.max_results, 20))
 
+    # 2) Récupération paroles
+    songs_raw = find_lyrics(parsed)
+
+    # 3) Normalisation / langues
+    songs_processed = normalize_lyrics(songs_raw, parsed)
+
+    # 4) Analyse thème
+    result = analyze_songs(
+        songs_processed,
+        parsed,
+        max_results=min(int(req.max_results), 20)
+    )
+
+    # 5) Réponse + debug
     return {
         "query": parsed["raw"],
-        "language_query": parsed["language"],
+        "language_query": parsed.get("language", "en"),
         "debug": {
             "songs_raw_count": len(songs_raw),
             "songs_processed_count": len(songs_processed),
@@ -37,24 +50,3 @@ def search(req: SearchRequest):
         },
         **result
     }
-    
-CACHE = {}  # theme_clean -> (timestamp, response)
-
-@app.post("/search")
-def search(req: SearchRequest):
-    theme = (req.theme or "").strip()
-    parsed = parse_theme(theme)
-    key = parsed["clean"]
-
-    import time
-    now = time.time()
-    if key in CACHE and now - CACHE[key][0] < 3600:
-        return CACHE[key][1]
-
-    songs_raw = find_lyrics(parsed)
-    songs_processed = normalize_lyrics(songs_raw, parsed)
-    result = analyze_songs(songs_processed, parsed, max_results=min(req.max_results, 20))
-
-    payload = {"query": parsed["raw"], "language_query": parsed["language"], **result}
-    CACHE[key] = (now, payload)
-    return payload
