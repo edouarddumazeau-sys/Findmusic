@@ -79,6 +79,8 @@ def analyze_songs(songs: list, parsed_theme: dict, max_results: int = 20) -> dic
         if not lyr.strip():
             continue
         rel = compute_relevance(lyr, strict, expanded)
+            if rel == 0:
+            rel = 0.15  # plancher V1 pour éviter zéro résultat
         den = compute_density(lyr, strict)
         cen = compute_centrality(lyr, strict)
         snippet = extract_snippet(lyr, strict)
