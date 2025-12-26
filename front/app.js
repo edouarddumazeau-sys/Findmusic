@@ -42,7 +42,7 @@ $("go").addEventListener("click", async () => {
     const res = await fetch(`${PROXY_URL}/search`, {
       method: "POST",
       headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ theme, max_results: 20 })
+      body: JSON.stringify({ theme, max_results: 10 })
     });
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
