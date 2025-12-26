@@ -31,7 +31,11 @@ def _search_genius(keyword: str, limit_hits: int = 10) -> list[dict]:
     if r.status_code == 429:
         time.sleep(15)
         return []
+  #  if r.status_code != 200:
+  #      return []
     if r.status_code != 200:
+    # on remonte l'info pour debug en logs Render
+        print("GENIUS status:", r.status_code, "body:", r.text[:200])
         return []
     hits = r.json().get("response", {}).get("hits", [])[:limit_hits]
     out = []
