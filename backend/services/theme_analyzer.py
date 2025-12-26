@@ -13,12 +13,13 @@ def compute_relevance(lyrics: str, strict: list[str], expanded: list[str]) -> fl
 
 def compute_density(lyrics: str, strict: list[str]) -> float:
     lines = [l.strip() for l in lyrics.split("\n") if l.strip()]
+    keys = list(set(strict + expanded))
     if not lines:
         return 0.0
     hit = 0
     for line in lines:
         low = line.lower()
-        if any(w in low for w in strict):
+        if any(w in low for w in keys):
             hit += 1
     return min(1.0, hit / len(lines))
 
@@ -44,7 +45,8 @@ def extract_snippet(lyrics: str, strict: list[str]) -> str:
         if s > 0:
             scored.append((s, line))
     if not scored:
-        return ""
+        fallback = [l for l in lines[:2] if l.strip()]
+        return "\n".join(fallback)
     scored.sort(key=lambda x: x[0], reverse=True)
     best = [scored[0][1]]
     if len(scored) > 1:
