@@ -16,6 +16,13 @@ class SearchRequest(BaseModel):
 def health():
     return {"status": "OK"}
 
+import os
+
+@app.get("/debug_env")
+def debug_env():
+    tok = os.getenv("GENIUS_TOKEN", "")
+    return {"genius_token_present": bool(tok and tok.strip()), "genius_token_len": len(tok.strip())}
+    
 @app.post("/search")
 def search(req: SearchRequest):
     theme = (req.theme or "").strip()
