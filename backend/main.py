@@ -31,3 +31,24 @@ def search(req: SearchRequest):
         "language_query": parsed["language"],
         **result
     }
+    
+CACHE = {}  # theme_clean -> (timestamp, response)
+
+@app.post("/search")
+def search(req: SearchRequest):
+    theme = (req.theme or "").strip()
+    parsed = parse_theme(theme)
+    key = parsed["clean"]
+
+    import time
+    now = time.time()
+    if key in CACHE and now - CACHE[key][0] < 3600:
+        return CACHE[key][1]
+
+    songs_raw = find_lyrics(parsed)
+    songs_processed = normalize_lyrics(songs_raw, parsed)
+    result = analyze_songs(songs_processed, parsed, max_results=min(req.max_results, 20))
+
+    payload = {"query": parsed["raw"], "language_query": parsed["language"], **result}
+    CACHE[key] = (now, payload)
+    return payload
