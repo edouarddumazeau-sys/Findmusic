@@ -80,9 +80,7 @@ def extract_snippet(lyrics: str, strict: list) -> str:
 
 
 def classify(density: float, centrality: float) -> str:
-    if density + centrality > 0.35:
-        return "main"
-    return "secondary"
+    return "main" if (density + centrality) > 0.25 else "secondary"
 
 
 def weighted_shuffle(items: list) -> list:
