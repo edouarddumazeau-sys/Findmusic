@@ -53,6 +53,7 @@ def _lyrics_ovh(artist: str, title: str) -> str | None:
 
 def find_lyrics(parsed_theme: dict) -> list[dict]:
     keywords = parsed_theme["expanded_keywords"]
+    keywords = keywords[:5]
     songs: list[dict] = []
 
     # 1) Genius (prioritaire)
@@ -67,7 +68,7 @@ def find_lyrics(parsed_theme: dict) -> list[dict]:
                     "lyrics": lyrics
                 })
         time.sleep(0.25)
-        if len(songs) >= 60:
+        if len(songs) >= 25:
             break
 
     # 2) Fallback lyrics.ovh (si Genius vide ou pauvre)
@@ -81,4 +82,4 @@ def find_lyrics(parsed_theme: dict) -> list[dict]:
     for s in songs:
         key = (s["artist"].lower(), s["title"].lower())
         uniq[key] = s
-    return list(uniq.values())[:60]
+    return list(uniq.values())[:25]
