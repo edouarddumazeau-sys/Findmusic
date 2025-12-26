@@ -5,10 +5,13 @@ import time
 
 GENIUS_TOKEN = os.getenv("GENIUS_TOKEN", "").strip()
 GENIUS_SEARCH = "https://api.genius.com/search"
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+}
 
 def _scrape_lyrics_from_genius_page(url: str) -> str | None:
     headers = {"User-Agent": "Mozilla/5.0"}
-    r = requests.get(url, timeout=15)
+    r = requests.get(url, headers=HEADERS, timeout=15)
     if r.status_code != 200:
         return None
     soup = BeautifulSoup(r.text, "html.parser")
@@ -27,7 +30,7 @@ def _search_genius(keyword: str, limit_hits: int = 10) -> list[dict]:
     if not GENIUS_TOKEN:
         return []
     headers = {"Authorization": f"Bearer {GENIUS_TOKEN}"}
-    r = requests.get(GENIUS_SEARCH, headers=headers, params={"q": keyword}, timeout=15)
+    r = requests.get(GENIUS_SEARCH, headers={**headers, **HEADERS}, params={"q": keyword}, timeout=15)
     if r.status_code == 429:
         time.sleep(15)
         return []
