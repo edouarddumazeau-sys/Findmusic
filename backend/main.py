@@ -29,6 +29,12 @@ def search(req: SearchRequest):
     return {
         "query": parsed["raw"],
         "language_query": parsed["language"],
+        "debug": {
+            "songs_raw_count": len(songs_raw),
+            "songs_processed_count": len(songs_processed),
+            "main_count": len(result.get("results_main", [])),
+            "secondary_count": len(result.get("results_secondary", [])),
+        },
         **result
     }
     
