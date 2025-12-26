@@ -29,8 +29,8 @@ def _search_genius(keyword: str, limit_hits: int = 10) -> list[dict]:
     headers = {"Authorization": f"Bearer {GENIUS_TOKEN}"}
     r = requests.get(GENIUS_SEARCH, headers=headers, params={"q": keyword}, timeout=15)
     if r.status_code == 429:
-    time.sleep(10)
-    return []
+        time.sleep(15)
+        return []
     if r.status_code != 200:
         return []
     hits = r.json().get("response", {}).get("hits", [])[:limit_hits]
