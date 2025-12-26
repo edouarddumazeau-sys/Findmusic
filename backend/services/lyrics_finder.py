@@ -26,6 +26,9 @@ def _search_genius(keyword: str, limit_hits: int = 10) -> list[dict]:
         return []
     headers = {"Authorization": f"Bearer {GENIUS_TOKEN}"}
     r = requests.get(GENIUS_SEARCH, headers=headers, params={"q": keyword}, timeout=15)
+    if r.status_code == 429:
+    time.sleep(10)
+    return []
     if r.status_code != 200:
         return []
     hits = r.json().get("response", {}).get("hits", [])[:limit_hits]
@@ -52,13 +55,13 @@ def _lyrics_ovh(artist: str, title: str) -> str | None:
         return None
 
 def find_lyrics(parsed_theme: dict) -> list[dict]:
-    keywords = parsed_theme["expanded_keywords"]
+    keywords = parsed_theme["expanded_keywords"][:2]
     keywords = keywords[:5]
     songs: list[dict] = []
 
     # 1) Genius (prioritaire)
     for kw in keywords:
-        for cand in _search_genius(kw, limit_hits=10):
+        for cand in _search_genius(kw, limit_hits=3):
             lyrics = _scrape_lyrics_from_genius_page(cand["url"])
             if lyrics:
                 songs.append({
@@ -68,7 +71,7 @@ def find_lyrics(parsed_theme: dict) -> list[dict]:
                     "lyrics": lyrics
                 })
         time.sleep(0.25)
-        if len(songs) >= 25:
+        if len(songs) >= 12:
             break
 
     # 2) Fallback lyrics.ovh (si Genius vide ou pauvre)
@@ -82,4 +85,4 @@ def find_lyrics(parsed_theme: dict) -> list[dict]:
     for s in songs:
         key = (s["artist"].lower(), s["title"].lower())
         uniq[key] = s
-    return list(uniq.values())[:25]
+    return list(uniq.values())[:12]
