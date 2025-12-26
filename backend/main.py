@@ -33,7 +33,7 @@ def search(req: SearchRequest):
     parsed = parse_theme(theme)
 
     # 2) Récupération paroles
-    songs_raw = find_lyrics(parsed)
+    songs_raw, lf_debug = find_lyrics(parsed)
 
     # 3) Normalisation / langues
     songs_processed = normalize_lyrics(songs_raw, parsed)
@@ -54,6 +54,7 @@ def search(req: SearchRequest):
             "songs_processed_count": len(songs_processed),
             "main_count": len(result.get("results_main", [])),
             "secondary_count": len(result.get("results_secondary", [])),
+            "lyrics_finder": lf_debug
         },
         **result
     }
