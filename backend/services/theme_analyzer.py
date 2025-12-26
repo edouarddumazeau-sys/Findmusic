@@ -79,6 +79,8 @@ def analyze_songs(songs: list, parsed_theme: dict, max_results: int = 20) -> dic
         snippet = extract_snippet(lyr, strict)
         cat = classify(den, cen)
 
+    if rel < 0.1:
+    continue
         enriched.append({
             "title": s.get("title"),
             "artist": s.get("artist"),
