@@ -53,7 +53,7 @@ def compute_centrality(lyrics: str, strict: list) -> float:
     return min(1.0, score)
 
 
-def extract_snippet(lyrics: str, strict: list) -> str:
+def extract_snippet(lyrics: str, strict: list[str]) -> str:
     lines = [l.strip() for l in lyrics.split("\n") if l.strip()]
     if not lines:
         return ""
@@ -61,22 +61,36 @@ def extract_snippet(lyrics: str, strict: list) -> str:
     scored = []
     for line in lines:
         low = line.lower()
-        count = 0
-        for w in strict:
-            if w in low:
-                count += 1
-        if count > 0:
-            scored.append((count, line))
+        s = sum(1 for w in strict if w in low)
+        if s > 0:
+            scored.append((s, line))
 
+    # Fallback si rien ne match
     if not scored:
-        return "\n".join(lines[:2])
+        out = []
+        seen = set()
+        for l in lines:
+            key = l.lower()
+            if key not in seen:
+                out.append(l)
+                seen.add(key)
+            if len(out) == 3:
+                break
+        return "\n".join(out)
 
     scored.sort(key=lambda x: x[0], reverse=True)
-    best = [scored[0][1]]
-    if len(scored) > 1:
-        best.append(scored[1][1])
 
-    return "\n".join(best)
+    out = []
+    seen = set()
+    for _, l in scored:
+        key = l.lower()
+        if key not in seen:
+            out.append(l)
+            seen.add(key)
+        if len(out) == 3:
+            break
+
+    return "\n".join(out)
 
 
 def classify(density: float, centrality: float) -> str:
