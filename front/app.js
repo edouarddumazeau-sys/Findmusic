@@ -48,7 +48,7 @@ $("go").addEventListener("click", async () => {
     const data = await res.json();
 
     const dbg = data.debug ? ` • debug raw=${data.debug.songs_raw_count} processed=${data.debug.songs_processed_count} main=${data.debug.main_count} secondary=${data.debug.secondary_count}` : "";
-    $("status").textContent = `OK • requête: "${data.query}" (${(data.language_query||"").toUpperCase()})${dbg}`;
+    $("status").textContent = `OK • requête: "${data.query}" (${(data.language_query||"").toUpperCase()})`;
 
     renderSection($("main"), data.results_main);
     renderSection($("secondary"), data.results_secondary);
