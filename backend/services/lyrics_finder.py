@@ -78,7 +78,7 @@ def _search_genius_debug(keyword: str, limit_hits: int = 10):
         return [], f"exc:{type(e).__name__}"
 
     if r.status_code == 429:
-        time.sleep(15)
+        time.sleep(25)
         return [], "429"
 
     if r.status_code != 200:
