@@ -56,6 +56,15 @@ def search(req: SearchRequest):
     )
 
     # 5) Réponse + debug
+    payload = {
+    "query": parsed["raw"],
+    "language_query": parsed.get("language", "fr"),
+    **result
+    }
+
+    CACHE[key] = {"t": now, "payload": payload}
+    return payload
+    
     return {
         "query": parsed["raw"],
         "language_query": parsed.get("language", "en"),
