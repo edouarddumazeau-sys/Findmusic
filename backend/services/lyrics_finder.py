@@ -153,7 +153,7 @@ def find_lyrics(parsed_theme: dict):
         if len(songs) >= 25:
             break
 
-        time.sleep(0.25)  # petite pause entre keywords
+        time.sleep(0.35)  # petite pause entre keywords
 
     # dédoublonnage
     uniq = {}
