@@ -1,3 +1,8 @@
+import time
+
+CACHE = {}  # key -> {"t": timestamp, "payload": response}
+CACHE_TTL = 30 * 60  # 30 minutes
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
