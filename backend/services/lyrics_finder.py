@@ -124,6 +124,8 @@ def find_lyrics(parsed_theme: dict):
 
     for kw in keywords:
         cands, status = _search_genius_debug(kw, limit_hits=6)
+        if status == "429":
+            break  # ⛔ stop tout : on évite d'aggraver le rate-limit
         debug["genius_search_statuses"].append({kw: status})
         debug["genius_hits_total"] += len(cands)
 
