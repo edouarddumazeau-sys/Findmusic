@@ -36,7 +36,12 @@ def search(req: SearchRequest):
 
     # 1) Parse
     parsed = parse_theme(theme)
+    key = parsed.get("clean", theme.lower().strip())
+    now = time.time()
 
+    if key in CACHE and (now - CACHE[key]["t"] < CACHE_TTL):
+        return CACHE[key]["payload"]
+        
     # 2) Récupération paroles
     songs_raw, lf_debug = find_lyrics(parsed)
 
